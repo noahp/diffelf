@@ -1,7 +1,12 @@
 [package]
 name = "diffelf"
+description = "Show differences in ELF files"
+license = "MIT"
+homepage = "https://github.com/noahp/diffelf"
+repository = "https://github.com/noahp/diffelf"
 version = "0.1.0"
 authors = ["Noah Pendleton <2538614+noahp@users.noreply.github.com>"]
+readme = "README.md"
 edition = "2018"
 
 [dependencies]
