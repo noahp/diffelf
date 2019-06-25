@@ -1,5 +1,6 @@
 sudo: required
 language: rust
+cache: cargo
 
 # Cache settings from https://levans.fr/rust_travis_cache.html
 # Need to cache the whole `.cargo` directory to keep .crates.toml for
