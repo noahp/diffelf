@@ -16,3 +16,8 @@ diffelf file1.elf file2.elf
 # unified diff style
 diffelf -u file1.elf file2.elf
 ```
+
+_**TODO**_
+- make it work :\
+- integration tests!
+- optionally suggest symbols at diff locations?

@@ -10,3 +10,7 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
+clap = "2.33.0"
+colored = "*"
+difference = "2.0"
+elfkit = "0.0.7"
