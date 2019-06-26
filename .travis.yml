@@ -1,11 +1,45 @@
+sudo: required
 language: rust
 
-rust:
-  - stable
-  - beta
-  - nightly
+# Cache settings from https://levans.fr/rust_travis_cache.html
+# Need to cache the whole `.cargo` directory to keep .crates.toml for
+# cargo-update to work
+cache:
+  directories:
+    - /home/travis/.cargo
+
+# But don't cache the cargo registry
+before_cache:
+  - rm -rf /home/travis/.cargo/registry
+
+addons:
+  apt:
+    packages:
+      - libssl-dev
 
 matrix:
   allow_failures:
     - rust: nightly
-  fast_finish: true
+
+  include:
+    # only run coverage on the stable leaf
+    - rust: stable
+      before_script:
+        - cargo install cargo-tarpaulin -f
+        - rustup component add clippy rustfmt
+      after_success:
+        - cargo tarpaulin --out Xml
+        - bash <(curl -s https://codecov.io/bash)
+
+    - rust: beta
+
+    - rust: nightly
+
+before_script:
+  - rustup component add clippy rustfmt
+
+script:
+  - cargo build --verbose
+  - cargo test --verbose
+  - cargo fmt -- --check --verbose
+  - cargo clippy -- -D warnings
