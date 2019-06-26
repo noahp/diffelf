@@ -15,10 +15,12 @@ where
 }
 
 fn main() {
+    // Macro form, see https://github.com/clap-rs/clap/blob/master/src/macros.rs#L574
     let matches = clap_app!(diffelf =>
         (version: crate_version!())
         (author: crate_authors!())
         (about: "Diff me some elfs")
+        (@setting ColoredHelp)
         (@arg ELF1: +required "Difference elf")
         (@arg ELF2: +required "Base elf")
     )
