@@ -8,15 +8,22 @@ cache: cargo
 cache:
   directories:
     - /home/travis/.cargo
+    - /home/travis/.cache
 
 # But don't cache the cargo registry
 before_cache:
   - rm -rf /home/travis/.cargo/registry
 
+env:
+  - RUSTC_WRAPPER=sccache
+
 addons:
   apt:
     packages:
       - libssl-dev
+      - pkg-config
+      - cmake
+      - zlib1g-dev
 
 matrix:
   allow_failures:
@@ -26,8 +33,9 @@ matrix:
     # only run coverage on the stable leaf
     - rust: stable
       before_script:
-        - cargo install cargo-tarpaulin -f
         - rustup component add clippy rustfmt
+        - type sccache || RUSTC_WRAPPER= cargo install sccache
+        - cargo install cargo-tarpaulin -f
       after_success:
         - cargo tarpaulin --out Xml
         - bash <(curl -s https://codecov.io/bash)
@@ -38,9 +46,21 @@ matrix:
 
 before_script:
   - rustup component add clippy rustfmt
+  - type sccache || RUSTC_WRAPPER= cargo install sccache
 
 script:
+  # zero sccache stats
+  - sccache -z
+
+  # basic build + test
   - cargo build --verbose
   - cargo test --verbose
+
+  # rustfmt in check mode
   - cargo fmt -- --check --verbose
+
+  # clippy for warnings
   - cargo clippy -- -D warnings
+
+  # print sccache stats
+  - sccache -s
